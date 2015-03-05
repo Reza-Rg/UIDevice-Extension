@@ -1,5 +1,5 @@
 //
-//  Device Extension.swift
+//  UIDeviceExtension.swift
 //  Reza Ranjbaran
 //
 //  Created by Reza Rg on 2/17/15.
@@ -131,8 +131,8 @@ extension UIDevice {
     }
     
     
-    // is Device Landscpae, is Portrate
-    public var isDevicePortrate: Bool {
+    // is Device Landscape, is Portrait
+    public var isDevicePortrait: Bool {
         return UIDevice.currentDevice().orientation.isPortrait
     }
     public var isDeviceLandscape: Bool {
