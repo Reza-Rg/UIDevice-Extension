@@ -15,13 +15,13 @@ extension UIDevice {
         let code = sysInfo.withUnsafeMutableBufferPointer {
             (inout ptr: UnsafeMutableBufferPointer<CChar>) -> String in
             uname(UnsafeMutablePointer<utsname>(ptr.baseAddress))
-            let machinePtr = advance(ptr.baseAddress, Int(_SYS_NAMELEN * 4))
+            let machinePtr = ptr.baseAddress.advancedBy(Int(_SYS_NAMELEN * 4))
             return String.fromCString(machinePtr)!
         }
         
         return code
     }
-
+    
     // Device Family : iPhone,iPad, ...
     public var deviceFamily: String {
         
@@ -32,14 +32,15 @@ extension UIDevice {
     public var deviceModel: String {
         
         var model : String
-        var deviceCode = UIDevice().deviceCode
+        let deviceCode = UIDevice().deviceCode
         switch deviceCode {
-
+            
         case "iPod1,1":                                 model = "iPod Touch 1G"
         case "iPod2,1":                                 model = "iPod Touch 2G"
         case "iPod3,1":                                 model = "iPod Touch 3G"
         case "iPod4,1":                                 model = "iPod Touch 4G"
         case "iPod5,1":                                 model = "iPod Touch 5G"
+        case "iPod7,1":                                 model = "iPod Touch 6G"
             
         case "iPhone1,1":                               model = "iPhone 2G"
         case "iPhone1,2":                               model = "iPhone 3G"
@@ -52,7 +53,10 @@ extension UIDevice {
         case "iPhone6,1", "iPhone6,2":                  model = "iPhone 5S"
         case "iPhone7,2":                               model = "iPhone 6"
         case "iPhone7,1":                               model = "iPhone 6 Plus"
-
+        case "iPhone8,1":                               model = "iPhone 6S"
+        case "iPhone8,2":                               model = "iPhone 6S Plus"
+            
+            
         case "iPad1,1":                                 model = "iPad 1"
         case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4":model = "iPad 2"
         case "iPad3,1", "iPad3,2", "iPad3,3":           model = "iPad 3"
@@ -62,6 +66,8 @@ extension UIDevice {
         case "iPad2,5", "iPad2,6", "iPad2,7":           model = "iPad Mini"
         case "iPad4,4", "iPad4,5", "iPad4,6":           model = "iPad Mini 2"
         case "iPad4,7", "iPad4,8", "iPad4,9":           model = "iPad Mini 3"
+        case "iPad5,1", "iPad5,2":                      model = "iPad Mini 4"
+        case "iPad6,7", "iPad6,8":                      model = "iPad Pro"
             
         case "i386", "x86_64":                          model = "Simulator"
         default:                                        model = deviceCode //If unkhnown
@@ -69,11 +75,11 @@ extension UIDevice {
         
         return model
     }
-
+    
     //Device Jailbreaked or not
     public var deviceJailed: Bool {
-        var path : NSString = "/Applications/Cydia.app"
-        var fileExists : Bool = NSFileManager.defaultManager().fileExistsAtPath(path)
+        let path : NSString = "/Applications/Cydia.app"
+        let fileExists : Bool = NSFileManager.defaultManager().fileExistsAtPath(path as String)
         return fileExists
     }
     
@@ -81,52 +87,53 @@ extension UIDevice {
     public var deviceIOSVersion: String {
         return UIDevice.currentDevice().systemVersion
     }
-
+    
     //Device Screen Width and Height
     public var deviceScreenWidth: CGFloat {
         let screenSize: CGRect = UIScreen.mainScreen().bounds
-        var width = screenSize.width;
+        let width = screenSize.width;
         return width
     }
     public var deviceScreenHeight: CGFloat {
         let screenSize: CGRect = UIScreen.mainScreen().bounds
-        var height = screenSize.height;
+        let height = screenSize.height;
         return height
     }
     
     //Device Remaining free space
-    public var deviceFreeSpace: Int64? {
-        let documentDirectoryPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
-        if let systemAttributes = NSFileManager.defaultManager().attributesOfFileSystemForPath(documentDirectoryPath.last as String, error: nil) {
-            if let freeSize = systemAttributes[NSFileSystemFreeSize] as? NSNumber {
-                return freeSize.longLongValue
-            }
-        }
-        return nil
-    }
+    //TODO REMOVED BY REZA
+    //    public var deviceFreeSpace: Int64? {
+    //        let documentDirectoryPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+    //        if let systemAttributes = try! NSFileManager.defaultManager().attributesOfFileSystemForPath(documentDirectoryPath.last as String!) {
+    //            if let freeSize = systemAttributes[NSFileSystemFreeSize] as? NSNumber {
+    //                return freeSize.longLongValue
+    //            }
+    //        }
+    //        return nil
+    //    }
     
     //Device Orientation String
     public var deviceOrientationString: String {
-
+        
         var orientation : String
         
-            switch UIDevice.currentDevice().orientation{
-            case .Portrait:
-                orientation="Portrait"
-            case .PortraitUpsideDown:
-                orientation="Portrait Upside Down"
-            case .LandscapeLeft:
-                orientation="Landscape Left"
-            case .LandscapeRight:
-                orientation="Landscape Right"
-            case .FaceUp:
-                orientation="Face Up"
-            case .FaceDown:
-                orientation="Face Down"
-            default:
-                orientation="Unknown"
-            }
-
+        switch UIDevice.currentDevice().orientation{
+        case .Portrait:
+            orientation="Portrait"
+        case .PortraitUpsideDown:
+            orientation="Portrait Upside Down"
+        case .LandscapeLeft:
+            orientation="Landscape Left"
+        case .LandscapeRight:
+            orientation="Landscape Right"
+        case .FaceUp:
+            orientation="Face Up"
+        case .FaceDown:
+            orientation="Face Down"
+        default:
+            orientation="Unknown"
+        }
+        
         return orientation
     }
     
